@@ -1,0 +1,58 @@
+mixin slide(type,content)
+	div.item(class=type)
+		img(src="static/bg.png",alt="bg")
+		div.container
+			div.carousel-caption
+				if block
+					block
+				else
+					p No content provided
+
+mixin generateProblems(problems)
+	+slide("active")
+						p.lead
+							|Test text
+							a.btn.btn-large.btn-primary(onclick="switchSlide()")
+								|Start!
+	each val in problems
+		- type=val.type
+		- data=val.data
+
+		+slide()
+			p.lead
+				if type=="mathjax"
+					h1
+						|#{data}
+				else
+					img(src=data)
+
+
+
+doctype html
+html(lang=en)
+	head
+		title="HMS Math Team"
+		meta(charset="utf8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fjquery.js")
+		link(rel="stylesheet", href="/static/bootstrap/bootplus.css")
+		link(rel="stylesheet", href="/static/bootstrap/bootplus-responsive.css")
+		link(rel="stylesheet",href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css")
+		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
+		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap.js")
+		script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
+		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
+		link(rel="stylesheet" href="/static/responsive.css")
+	body
+		div#container
+			div.carousel.slide#carousel-1
+				div.carousel-inner
+					+generateProblems(indata)
+			a(class="left carousel-control",href="#carousel-1",data-slide="prev")
+				|&lsaquo;
+			a(class="right carousel-control",href="#carousel-1",data-slide="next")
+				|&rsaquo;
+
+
+
