@@ -10,10 +10,10 @@ mixin slide(type,content)
 
 mixin generateProblems(problems)
 	+slide("active")
-						p.lead
-							|Test text
-							a.btn.btn-large.btn-primary(onclick="switchSlide()")
-								|Start!
+		p.lead
+			|Test text
+			a.btn.btn-large.btn-primary(onclick="switchSlide()")
+				|Start!
 	each val in problems
 		- type=val.type
 		- data=val.data
