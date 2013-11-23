@@ -40,6 +40,7 @@ html(lang=en)
 		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
 		script(src="/static/bootstrap/js/bootstrap.js")
 		script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+		script(src="/static/jquery.knob.js")
 		script(type='text/javascript').
 			var curSlide = 0;
 			var numSlides = 0;		
@@ -77,6 +78,7 @@ html(lang=en)
 			$(function(){
 				curSlide = 0;
 				numSlides = parseInt($(".bar").attr("aria-valuemax"));
+				$(".dial").knob();
 			});
 		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
@@ -89,10 +91,13 @@ html(lang=en)
 			div.carousel.slide#carousel-1(data-interval="false",data-wrap="false",style="background-color:#585858")
 				div.carousel-inner
 					+generateProblems(indata)
+					div.right-hack
+						input(type="text",class="dial",data-min="-50",data-max="50")
 			a(class="left carousel-control",onclick="prevSlide()")
 				|&lsaquo;
 			a(class="right carousel-control",onclick="nextSlide()")
 				|&rsaquo;
+
 
 
 
