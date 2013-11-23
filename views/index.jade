@@ -78,6 +78,9 @@ html(lang=en)
 			$(function(){
 				curSlide = 0;
 				numSlides = parseInt($(".bar").attr("aria-valuemax"));
+				MathJax.Hub.Config({
+					"HTML-CSS": { scale: 200}
+				});
 				$(".dial").knob();
 			});
 		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
