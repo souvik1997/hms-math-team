@@ -1,6 +1,5 @@
 mixin slide(type,content)
 	div.item(class=type)
-		img(src="static/bg.png",alt="bg")
 		div.container
 			div.carousel-caption
 				if block
@@ -12,8 +11,8 @@ mixin generateProblems(problems)
 	+slide("active")
 		p.lead
 			|Test text
-			a.btn.btn-large.btn-primary(onclick="switchSlide()")
-				|Start!
+		a.btn.btn-large.btn-primary(onclick="nextSlide()")
+			|Start!
 	each val in problems
 		- type=val.type
 		- data=val.data
@@ -35,23 +34,64 @@ html(lang=en)
 		meta(charset="utf8")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fjquery.js")
-		link(rel="stylesheet", href="/static/bootstrap/bootplus.css")
+		link(rel="stylesheet", href="/static/bootstrap/bootstrap.css")
 		link(rel="stylesheet", href="/static/bootstrap/bootplus-responsive.css")
 		link(rel="stylesheet",href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css")
 		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
-		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap.js")
+		script(src="/static/bootstrap/js/bootstrap.js")
 		script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+		script(type='text/javascript').
+			var curSlide = 0;
+			var numSlides = 0;		
+			function nextSlide()
+			{
+				if (curSlide < numSlides)
+				{	
+					$(".carousel").carousel("next");
+					curSlide++;	
+				}
+				else
+				{
+					onEnd();
+				}
+				updateProgressbar();
+			}
+			function prevSlide()
+			{
+				if (curSlide > 0)
+				{	
+					$(".carousel").carousel("prev");
+					curSlide--;	
+				}
+				updateProgressbar();
+			}
+			function onEnd()
+			{
+				alert("Done!");
+			}
+			function updateProgressbar()
+			{
+				var ratio = Math.round((curSlide)/(numSlides) * 100);
+				$(".bar").width(ratio+"%");
+			}
+			$(function(){
+				curSlide = 0;
+				numSlides = parseInt($(".bar").attr("aria-valuemax"));
+			});
 		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
 		link(rel="stylesheet" href="/static/responsive.css")
 	body
 		div#container
-			div.carousel.slide#carousel-1
+			div.progress
+				div.bar(role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax=numSlides style="width: 0%")
+					span.sr-only			
+			div.carousel.slide#carousel-1(data-interval="false",data-wrap="false",style="background-color:#585858")
 				div.carousel-inner
 					+generateProblems(indata)
-			a(class="left carousel-control",href="#carousel-1",data-slide="prev")
+			a(class="left carousel-control",onclick="prevSlide()")
 				|&lsaquo;
-			a(class="right carousel-control",href="#carousel-1",data-slide="next")
+			a(class="right carousel-control",onclick="nextSlide()")
 				|&rsaquo;
 
 
