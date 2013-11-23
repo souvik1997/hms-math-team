@@ -47,7 +47,7 @@ html(lang=en)
 
 			var totalTime = 0;
 			var elapsedTime = 0;
-
+			var interval = 100;
 			var timerHandle = NaN;
 			function nextSlide()
 			{
@@ -77,7 +77,7 @@ html(lang=en)
 				timerStop();
 				totalTime = time*1000; /* Convert to milliseconds */
 				elapsedTime = 0;
-				timerHandle = setInterval(timerTick,100);
+				timerHandle = setInterval(timerTick,interval);
 				$(".dial").knob({
 					'min':0,
 					'max':time,
@@ -91,7 +91,7 @@ html(lang=en)
 			function timerTick()
 			{
 				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
-				elapsedTime += 100;
+				elapsedTime += interval;
 			}
 			function onEnd()
 			{
