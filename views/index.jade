@@ -43,7 +43,12 @@ html(lang=en)
 		script(src="/static/jquery.knob.js")
 		script(type='text/javascript').
 			var curSlide = 0;
-			var numSlides = 0;		
+			var numSlides = 0;
+
+			var totalTime = 0;
+			var elapsedTime = 0;
+
+			var timerHandle = NaN;
 			function nextSlide()
 			{
 				if (curSlide < numSlides)
@@ -56,6 +61,7 @@ html(lang=en)
 					onEnd();
 				}
 				updateProgressbar();
+				timerStart(10); /*Start with ten seconds. This will be merged with the onClick event handler so that time limits can be set 				per question*/
 			}
 			function prevSlide()
 			{
@@ -65,6 +71,27 @@ html(lang=en)
 					curSlide--;	
 				}
 				updateProgressbar();
+			}
+			function timerStart(time)
+			{
+				timerStop();
+				totalTime = time*1000; /* Convert to milliseconds */
+				elapsedTime = 0;
+				timerHandle = setInterval(timerTick,100);
+				$(".dial").knob({
+					'min':0,
+					'max':time,
+				});
+			}
+			function timerStop()
+			{
+				if (timerHandle != NaN)
+					clearInterval(timerHandle);
+			}
+			function timerTick()
+			{
+				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
+				elapsedTime += 100;
 			}
 			function onEnd()
 			{
@@ -95,7 +122,7 @@ html(lang=en)
 				div.carousel-inner
 					+generateProblems(indata)
 					div.right-hack
-						input(type="text",class="dial",data-min="-50",data-max="50")
+						input(type="text",class="dial",data-displayInput="false")
 			a(class="left carousel-control",onclick="prevSlide()")
 				|&lsaquo;
 			a(class="right carousel-control",onclick="nextSlide()")
