@@ -31,14 +31,23 @@ function getData()
 			}];
 	return { indata : data};
 }
+app.get("/*",function(request,response) //Fallback if the database is down or if a connection has not been established
+{
+	response.send("Cannot connect to database. Try again later.");
+});
 MongoClient.connect('mongodb://user123:secret@widmore.mongohq.com:10000/problems', 
 	function(err, db) {
 		if(err) throw err;
 
 		db.collection('math',function(err,collection)
 			{
-				app.get('/',function(request,response)
+				app.routes.get = []; //Clear routes
+				app.get("/*",function(request,response)
 				{
+					console.log(request.params[0]);
+					console.log(request.query.answer);
+					/* A URL can be something like this:
+					http://www.example.com/ProblemSetName?answer=true*/
 					collection.find().toArray(
 						function(err,items)
 						{
