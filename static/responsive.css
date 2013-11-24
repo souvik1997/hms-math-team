@@ -207,8 +207,8 @@ div.addthis_toolbox {
 }
 .right-hack{
 	position:absolute;
-	top:60%;
-	left:80%;
+	top:65%;
+	left:82%;
 	width:auto;
 	height:auto;
 	margin-top:-20px;
@@ -237,7 +237,7 @@ div.addthis_toolbox {
 }
 .ipad .right-hack-text
 {
-	left:87.5%;
+	left:86.5%;
 }
 .left-hack{
 	position:absolute;

@@ -19,7 +19,17 @@ app.listen(port, function() {
 
 function getData()
 {
-	data = [{type:"mathjax",data:"\\(\\frac{\\mathrm{d} y} {\\mathrm{d} x}\\int_{0}^{\\pi } x^{\\sqrt{x^{\\frac{2}{3}}{}}}\\)",time:10}, /* \frac{3}{2} */
-			{type:"image", data:"http://placehold.it/650x100",time:30}];
+	data = [{
+				type:"mathjax",
+				data:"\\[\\sqrt{36}\\]",
+				time:10,
+				answer:"\\(\\frac{3}{2}\\)"
+			}, 
+			{
+				type:"image", 
+				data:"http://placehold.it/650x100",
+				time:30,
+				answer:"A"
+			}];
 	return { indata : data};
 }

@@ -25,7 +25,11 @@ mixin generateProblems(problems)
 				else
 					img(src=data)
 
-
+mixin generateAnswers(problems)
+	p
+		each val in problems
+			- ans = val.answer
+			|#{ans}
 
 doctype html
 html(lang=en)
@@ -92,6 +96,9 @@ html(lang=en)
 				timerStop();
 				timerClear();
 				$("#countdown").css("color","#FFFFFF");
+				$(".dial").trigger('configure',{
+						fgColor: "#35FF59"
+					});
 				totalTime = time*1000; /* Convert to milliseconds */
 				elapsedTime = 0;
 				timerHandle = setInterval(timerTick,interval);
@@ -125,13 +132,18 @@ html(lang=en)
 			}
 			function timerTick()
 			{
-				elapsedTime += interval;
 				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
 				$("#countdown").text(toFixed((totalTime-elapsedTime)/1000,3-Math.log(interval)/Math.log(10)));
 				if (elapsedTime > (3/4)*totalTime)
+				{
 					$("#countdown").css("color","#FF9B94");
+					$(".dial").trigger('configure',{
+						fgColor: "#FF9B94"
+					});
+				}
 				if (elapsedTime > totalTime)
 					timerEnd();
+				elapsedTime += interval;2
 			}
 			function timerEnd()
 			{
@@ -152,7 +164,7 @@ html(lang=en)
 				curSlide = 0;
 				numSlides = parseInt($(".bar").attr("aria-valuemax"));
 				MathJax.Hub.Config({
-					"HTML-CSS": { scale: 200}
+					"HTML-CSS": { scale: 240}
 				});
 				$(".dial").knob();
 			});
@@ -168,9 +180,7 @@ html(lang=en)
 						h4(class="modal-title") Done!
 					div.modal-body
 						h4 Answers
-						p
-							|1. dsaf
-							|2. dsf
+						+generateAnswers(indata)
 					div.modal-footer
 						button.btn.btn-default(type="button",data-dismiss="modal") Close
 		div#container
@@ -182,7 +192,7 @@ html(lang=en)
 				div.carousel-inner
 					+generateProblems(indata)
 					div.right-hack
-						input(type="text",class="dial",data-displayInput="false")
+						input(type="text",class="dial",data-displayInput="false",data-width="150",data-thickness=".16", data-fgColor="#35FF59")
 					div.right-hack-text
 						h2#countdown
 
