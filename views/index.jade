@@ -62,6 +62,7 @@ html(lang=en)
 				{
 					onEnd();
 					timerStop();
+					timerClear();
 				}
 			}
 			function prevSlide()
@@ -80,11 +81,15 @@ html(lang=en)
 				if (t != 0)
 					timerStart(t);
 				else
+				{
 					timerStop();
+					timerClear();
+				}
 			}
 			function timerStart(time)
 			{
 				timerStop();
+				timerClear();
 				totalTime = time*1000; /* Convert to milliseconds */
 				elapsedTime = 0;
 				timerHandle = setInterval(timerTick,interval);
@@ -97,16 +102,31 @@ html(lang=en)
 			{
 				if (timerHandle != NaN)
 					clearInterval(timerHandle);
-				timerClear();
+				$("#countdown").text(toFixed(0,3-Math.log(interval)/Math.log(10)));
 			}
 			function timerClear()
 			{
 				$('.dial').val(0).trigger('change');
 			}
+			/* http://stackoverflow.com/questions/2221167/javascript-formatting-a-rounded-number-to-n-decimals/2909252#2909252 */
+			function toFixed(value, precision) {
+				var precision = precision || 0,
+				neg = value < 0,
+				power = Math.pow(10, precision),
+				value = Math.round(value * power),
+				integral = String((neg ? Math.ceil : Math.floor)(value / power)),
+				fraction = String((neg ? -value : value) % power),
+				padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
+
+				return precision ? integral + '.' +  padding + fraction : integral;
+			}
 			function timerTick()
 			{
 				elapsedTime += interval;
 				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
+				$("#countdown").text(toFixed((totalTime-elapsedTime)/1000,3-Math.log(interval)/Math.log(10)));
+				if (elapsedTime > totalTime)
+					timerStop();
 			}
 			function onEnd()
 			{
@@ -138,6 +158,9 @@ html(lang=en)
 					+generateProblems(indata)
 					div.right-hack
 						input(type="text",class="dial",data-displayInput="false")
+					div.left-hack
+						h2#countdown
+
 			a(class="left carousel-control",onclick="prevSlide()")
 				|&lsaquo;
 			a(class="right carousel-control",onclick="nextSlide()")
