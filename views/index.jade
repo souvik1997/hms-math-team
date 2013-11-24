@@ -1,5 +1,5 @@
-mixin slide(type,content)
-	div.item(class=type)
+mixin slide(type,time)
+	div.item(class=type,data-limit=time)
 		div.container
 			div.carousel-caption
 				if block
@@ -8,7 +8,7 @@ mixin slide(type,content)
 					p No content provided
 
 mixin generateProblems(problems)
-	+slide("active")
+	+slide("active","0")
 		p.lead
 			|Test text
 		a.btn.btn-large.btn-primary(onclick="nextSlide()")
@@ -16,8 +16,8 @@ mixin generateProblems(problems)
 	each val in problems
 		- type=val.type
 		- data=val.data
-
-		+slide()
+		- time = val.time
+		+slide("",time)
 			p.lead
 				if type=="mathjax"
 					h1
@@ -55,13 +55,14 @@ html(lang=en)
 				{	
 					$(".carousel").carousel("next");
 					curSlide++;	
+					updateProgressbar();
+					timerStartHelper();
 				}
 				else
 				{
 					onEnd();
+					timerStop();
 				}
-				updateProgressbar();
-				timerStart(10); /*Start with ten seconds. This will be merged with the onClick event handler so that time limits can be set 				per question*/
 			}
 			function prevSlide()
 			{
@@ -71,6 +72,15 @@ html(lang=en)
 					curSlide--;	
 				}
 				updateProgressbar();
+				timerStartHelper();
+			}
+			function timerStartHelper()
+			{
+				var t = parseInt($($(".item")[curSlide]).attr("data-limit"));
+				if (t != 0)
+					timerStart(t);
+				else
+					timerStop();
 			}
 			function timerStart(time)
 			{
@@ -87,11 +97,16 @@ html(lang=en)
 			{
 				if (timerHandle != NaN)
 					clearInterval(timerHandle);
+				timerClear();
+			}
+			function timerClear()
+			{
+				$('.dial').val(0).trigger('change');
 			}
 			function timerTick()
 			{
-				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
 				elapsedTime += interval;
+				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
 			}
 			function onEnd()
 			{
