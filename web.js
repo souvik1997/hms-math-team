@@ -21,6 +21,5 @@ function getData()
 {
 	data = [{type:"mathjax",data:"\\(\\frac{\\mathrm{d} y} {\\mathrm{d} x}\\int_{0}^{\\pi } x^{\\sqrt{x^{\\frac{2}{3}}{}}}\\)",time:10}, /* \frac{3}{2} */
 			{type:"image", data:"http://placehold.it/650x100",time:30}];
-	num = data.length;
-	return { indata : data, numSlides:num };
+	return { indata : data};
 }

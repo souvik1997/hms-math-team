@@ -141,7 +141,7 @@ html(lang=en)
 			}
 			function onEnd()
 			{
-				alert("Done!");
+				$('#myModal').modal();
 			}
 			function updateProgressbar()
 			{
@@ -160,9 +160,23 @@ html(lang=en)
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
 		link(rel="stylesheet" href="/static/responsive.css")
 	body
+		div.modal.fade#myModal
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
+						h4(class="modal-title") Done!
+					div.modal-body
+						h4 Answers
+						p
+							|1. dsaf
+							|2. dsf
+					div.modal-footer
+						button.btn.btn-default(type="button",data-dismiss="modal") Close
 		div#container
+			- num = indata.length;
 			div.progress
-				div.bar(role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax=numSlides style="width: 0%")
+				div.bar(role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax=num style="width: 0%")
 					span.sr-only			
 			div.carousel.slide#carousel-1(data-interval="false",data-wrap="false",style="background-color:#585858")
 				div.carousel-inner
