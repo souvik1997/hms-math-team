@@ -6,10 +6,8 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
 var port = process.env.PORT || 8080;
 app.use(express.bodyParser());
+var MongoClient = require('mongodb').MongoClient;
 
-app.get('/', function(request, response) {
-  response.render("index",getData())
-});
 
 app.use("/static",express.static(__dirname+"/static"));
 
@@ -33,3 +31,21 @@ function getData()
 			}];
 	return { indata : data};
 }
+MongoClient.connect('mongodb://user123:secret@widmore.mongohq.com:10000/problems', 
+	function(err, db) {
+		if(err) throw err;
+
+		db.collection('math',function(err,collection)
+			{
+				app.get('/',function(request,response)
+				{
+					collection.find().toArray(
+						function(err,items)
+						{
+							if (items != null)
+								response.render("index",{indata:items});
+						});
+				});
+			});
+		
+	});
