@@ -41,6 +41,7 @@ html(lang=en)
 		script(src="/static/bootstrap/js/bootstrap.js")
 		script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
 		script(src="/static/jquery.knob.js")
+		script(src="/static/css_browser_selector.js")
 		script(type='text/javascript').
 			var curSlide = 0;
 			var numSlides = 0;
@@ -158,7 +159,7 @@ html(lang=en)
 					+generateProblems(indata)
 					div.right-hack
 						input(type="text",class="dial",data-displayInput="false")
-					div.left-hack
+					div.right-hack-text
 						h2#countdown
 
 			a(class="left carousel-control",onclick="prevSlide()")
