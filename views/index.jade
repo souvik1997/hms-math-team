@@ -91,6 +91,7 @@ html(lang=en)
 			{
 				timerStop();
 				timerClear();
+				$("#countdown").css("color","#FFFFFF");
 				totalTime = time*1000; /* Convert to milliseconds */
 				elapsedTime = 0;
 				timerHandle = setInterval(timerTick,interval);
@@ -103,7 +104,8 @@ html(lang=en)
 			{
 				if (timerHandle != NaN)
 					clearInterval(timerHandle);
-				$("#countdown").text(toFixed(0,3-Math.log(interval)/Math.log(10)));
+				$("#countdown").text(toFixed(0,3-Math.round(Math.log(interval)/Math.log(10))));
+				timerHandle = NaN;
 			}
 			function timerClear()
 			{
@@ -126,8 +128,16 @@ html(lang=en)
 				elapsedTime += interval;
 				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
 				$("#countdown").text(toFixed((totalTime-elapsedTime)/1000,3-Math.log(interval)/Math.log(10)));
+				if (elapsedTime > (3/4)*totalTime)
+					$("#countdown").css("color","#FF9B94");
 				if (elapsedTime > totalTime)
-					timerStop();
+					timerEnd();
+			}
+			function timerEnd()
+			{
+				timerStop();
+				timerClear();
+				nextSlide();
 			}
 			function onEnd()
 			{
