@@ -1,36 +1,3 @@
-mixin slide(type,time)
-	div.item(class=type,data-limit=time)
-		div.container
-			div.carousel-caption
-				if block
-					block
-				else
-					p No content provided
-
-mixin generateProblems(problems)
-	+slide("active","0")
-		p.lead
-			|Test text
-		a.btn.btn-large.btn-primary(onclick="nextSlide()")
-			|Start!
-	each val in problems
-		- type=val.type
-		- data=val.data
-		- time = val.time
-		+slide("",time)
-			p.lead
-				if type=="mathjax"
-					h1
-						|#{data}
-				else
-					img(src=data)
-
-mixin generateAnswers(problems)
-	p
-		each val in problems
-			- ans = val.answer
-			|#{ans}
-
 doctype html
 html(lang=en)
 	head
@@ -43,164 +10,85 @@ html(lang=en)
 		link(rel="stylesheet",href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css")
 		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
 		script(src="/static/bootstrap/js/bootstrap.js")
-		script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
 		script(src="/static/jquery.knob.js")
-		script(src="/static/css_browser_selector.js")
-		script(type='text/javascript').
-			var curSlide = 0;
-			var numSlides = 0;
-
-			var totalTime = 0;
-			var elapsedTime = 0;
-			var interval = 100;
-			var timerHandle = NaN;
-			function nextSlide()
-			{
-				if (curSlide < numSlides)
-				{	
-					$(".carousel").carousel("next");
-					curSlide++;	
-					updateProgressbar();
-					timerStartHelper();
-				}
-				else
-				{
-					onEnd();
-					timerStop();
-					timerClear();
-				}
-			}
-			function prevSlide()
-			{
-				if (curSlide > 0)
-				{	
-					$(".carousel").carousel("prev");
-					curSlide--;	
-				}
-				updateProgressbar();
-				timerStartHelper();
-			}
-			function timerStartHelper()
-			{
-				var t = parseInt($($(".item")[curSlide]).attr("data-limit"));
-				if (t != 0)
-					timerStart(t);
-				else
-				{
-					timerStop();
-					timerClear();
-				}
-			}
-			function timerStart(time)
-			{
-				timerStop();
-				timerClear();
-				$("#countdown").css("color","#FFFFFF");
-				$(".dial").trigger('configure',{
-						fgColor: "#35FF59"
-					});
-				totalTime = time*1000; /* Convert to milliseconds */
-				elapsedTime = 0;
-				timerHandle = setInterval(timerTick,interval);
-				$(".dial").knob({
-					'min':0,
-					'max':time,
-				});
-			}
-			function timerStop()
-			{
-				if (timerHandle != NaN)
-					clearInterval(timerHandle);
-				$("#countdown").text(toFixed(0,3-Math.round(Math.log(interval)/Math.log(10))));
-				timerHandle = NaN;
-			}
-			function timerClear()
-			{
-				$('.dial').val(0).trigger('change');
-			}
-			/* http://stackoverflow.com/questions/2221167/javascript-formatting-a-rounded-number-to-n-decimals/2909252#2909252 */
-			function toFixed(value, precision) {
-				var precision = precision || 0,
-				neg = value < 0,
-				power = Math.pow(10, precision),
-				value = Math.round(value * power),
-				integral = String((neg ? Math.ceil : Math.floor)(value / power)),
-				fraction = String((neg ? -value : value) % power),
-				padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
-
-				return precision ? integral + '.' +  padding + fraction : integral;
-			}
-			function timerTick()
-			{
-				$('.dial').val(Math.round(elapsedTime/totalTime * 100)).trigger('change');
-				$("#countdown").text(toFixed((totalTime-elapsedTime)/1000,3-Math.log(interval)/Math.log(10)));
-				if (elapsedTime > (3/4)*totalTime)
-				{
-					$("#countdown").css("color","#FF9B94");
-					$(".dial").trigger('configure',{
-						fgColor: "#FF9B94"
-					});
-				}
-				if (elapsedTime > totalTime)
-					timerEnd();
-				elapsedTime += interval;2
-			}
-			function timerEnd()
-			{
-				timerStop();
-				timerClear();
-				nextSlide();
-			}
-			function onEnd()
-			{
-				$('#myModal').modal();
-			}
-			function updateProgressbar()
-			{
-				var ratio = Math.round((curSlide)/(numSlides) * 100);
-				$(".bar").width(ratio+"%");
-			}
-			$(function(){
-				curSlide = 0;
-				numSlides = parseInt($(".bar").attr("aria-valuemax"));
-				MathJax.Hub.Config({
-					"HTML-CSS": { scale: 240}
-				});
-				$(".dial").knob();
-			});
+		script(src="/static/css_browser_selector.js")		
 		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
 		link(rel="stylesheet" href="/static/responsive.css")
+		script.
+			$(function()
+			{
+				$(".alert").hide();
+				$(".dropdown-menu li a").click(function(){
+					$("#dropTitle").text($(this).text());
+					if ($(this).text() !== "New..." && $(this).text() !== "Select set")
+						$("#dropTitle").attr("data-title",$(this).text());
+					$("#dropTitle").append("<span class='caret pull-right' />")
+					//$("#dropdown:first-child").val($(this).text());
+				});
+			});
+			String.prototype.hashCode = function(){
+				var hash = 0;
+				if (this.length == 0) return hash;
+				for (i = 0; i < this.length; i++) {
+					char = this.charCodeAt(i);
+					hash = ((hash<<5)-hash)+char;
+					hash = hash & hash; // Convert to 32bit integer
+				}
+				return hash;
+			}
+			function auth()
+			{
+				if ($("#password").val().hashCode() === 753544051)
+				{
+					document.location = "/"+$("#dropTitle").attr("data-title");
+				}
+				else
+				{
+					$(".alert").show();
+				}
+			}
+		style.
+			body{background-color: #F7F7F6;}
+			.login{padding-top: 65px;}
+			.center{float: none; margin-left: auto; margin-right: auto;}
+			.custom {
+				width: 130px !important;
+			}
 	body
-		div.modal.fade#myModal
-			div.modal-dialog
-				div.modal-content
-					div.modal-header
-						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
-						h4(class="modal-title") Done!
-					div.modal-body
-						h4 Answers
-						+generateAnswers(indata)
-					div.modal-footer
-						button.btn.btn-default(type="button",data-dismiss="modal") Close
-		div#container
-			- num = indata.length;
-			div.progress
-				div.bar(role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax=num style="width: 0%")
-					span.sr-only			
-			div.carousel.slide#carousel-1(data-interval="false",data-wrap="false",style="background-color:#585858")
-				div.carousel-inner
-					+generateProblems(indata)
-					div.right-hack
-						input(type="text",class="dial",data-displayInput="false",data-width="150",data-thickness=".16", data-fgColor="#35FF59")
-					div.right-hack-text
-						h2#countdown
-
-			a(class="left carousel-control",onclick="prevSlide()")
-				|&lsaquo;
-			a(class="right carousel-control",onclick="nextSlide()")
-				|&rsaquo;
-
+		div.navbar.navbar-fixed-top
+			div.navbar-inner
+				a.brand(href="#") HMS Math Team
+				ul.nav.navbar-nav.pull-right
+					li
+						a(href="#about")
+							|About
+				
+		div.container.login
+			div.row
+				div.center.span6.well
+					legend Sign In
+					div.alert.alert-danger						
+						strong Error! 
+						|Incorrect password
+					input.span4(type="password",name="password")#password
+					p
+					div.btn-group
+							button.btn.btn-default.disabled(type="button") Present
+							button.btn.btn-default.disabled(type="button") Edit
+							div.btn-group#dropdown
+								button.btn.btn-default.custom.dropdown-toggle(type="button", data-toggle="dropdown",data-title="")#dropTitle Select set
+									span.caret.pull-right
+								ul.dropdown-menu
+									each category in categories
+										li
+											a(href="#")
+												|#{category}
+									li.divider
+									li
+										a(href="#")
+											|New...
+					button.btn.btn-default.pull-right(type="button",onclick="auth()") Login
 
 
 

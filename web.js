@@ -39,22 +39,33 @@ MongoClient.connect('mongodb://user123:secret@widmore.mongohq.com:10000/problems
 	function(err, db) {
 		if(err) throw err;
 
-		db.collection('math',function(err,collection)
-			{
-				app.routes.get = []; //Clear routes
-				app.get("/*",function(request,response)
+		app.routes.get = []; //Clear routes
+		app.get("/:name",function(request,response)	{
+			/*console.log(request.params.name);
+			console.log(request.query.answer);*/
+			/* A URL can be something like this:
+			http://www.example.com/ProblemSetName?answer=true*/
+			if (request.params[0] == "" || request.params[0] == "/")
+				console.log("index");
+
+			db.collection('math',function(err,collection){
+				collection.find({"category":request.params.name}).toArray(
+				function(err,items)
 				{
-					console.log(request.params[0]);
-					console.log(request.query.answer);
-					/* A URL can be something like this:
-					http://www.example.com/ProblemSetName?answer=true*/
-					collection.find().toArray(
-						function(err,items)
-						{
-							if (items != null)
-								response.render("index",{indata:items});
-						});
+					if (items != null)
+						response.render("app",{indata:items});
 				});
 			});
+		});
+		app.get("/",function(request,response) {
+			db.collection('math',function(err,collection){
+				collection.distinct("category",
+					function(err,items)
+					{
+						if (items != null)
+							response.render("index",{categories:items});
+					});
+			});
+		});
 		
 	});
