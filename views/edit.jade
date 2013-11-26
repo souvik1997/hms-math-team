@@ -1,0 +1,59 @@
+doctype html
+html(lang=en)
+	head
+		title="HMS Math Team"
+		meta(charset="utf8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fjquery.js")
+		link(rel="stylesheet", href="/static/bootstrap/bootstrap.css")
+		link(rel="stylesheet", href="/static/bootstrap/bootplus-responsive.css")
+		link(rel="stylesheet",href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css")
+		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
+		script(src="/static/bootstrap/js/bootstrap.js")
+		script(src="/static/jquery.knob.js")
+		script(src="/static/css_browser_selector.js")		
+		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
+		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
+		link(rel="stylesheet" href="/static/responsive.css")
+	body
+		div.navbar.navbar-fixed-top
+			div.navbar-inner
+				a.brand(href="/") HMS Math Team
+				
+		div.container.login
+			div.row
+				div.center.span6.well
+					legend Sign In
+					div.alert.alert-danger#alertpass
+						strong Error! 
+						div#alertText
+							|Incorrect password
+					div.alert.alert-warning#alertchoice
+						strong Warning!
+						div#alertText
+							|Select Edit or Present
+					label Password:
+					input.span4(type="password",name="password")#password
+					p
+					div.btn-group(data-toggle="buttons")
+						label.btn
+							input(type="radio" name="options",style="display:none")#present
+							|Present
+						label.btn
+							input(type="radio" name="options", style="display:none")#edit
+							|Edit
+					div.btn-group#dropdown
+						button.btn.btn-default.custom.dropdown-toggle(type="button", data-toggle="dropdown",data-title="")#dropTitle Select set
+							span.caret
+						ul.dropdown-menu
+							each category in categories
+								li
+									a(href="#") #{category}
+							li.divider
+							li
+								a(href="#")
+									|New...
+					button.btn.btn-default.pull-right(type="button",onclick="auth()") Login
+
+
+
