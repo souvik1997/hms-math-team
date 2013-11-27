@@ -57,6 +57,16 @@ MongoClient.connect('mongodb://user123:secret@widmore.mongohq.com:10000/problems
 				});
 			});
 		});
+		app.get("/edit/:name",function(request,response)	{
+			db.collection('math',function(err,collection){
+				collection.find({"category":request.params.name}).toArray(
+				function(err,items)
+				{
+					if (items != null)
+						response.render("edit",{data:items, category:request.params.name});
+				});
+			});
+		});
 		app.get("/",function(request,response) {
 			db.collection('math',function(err,collection){
 				collection.distinct("category",

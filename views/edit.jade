@@ -5,55 +5,62 @@ html(lang=en)
 		meta(charset="utf8")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		script(src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fjquery.js")
-		link(rel="stylesheet", href="/static/bootstrap/bootstrap.css")
+		link(rel="stylesheet", href="/static/bootstrap/css/bootstrap.css")
 		link(rel="stylesheet", href="/static/bootstrap/bootplus-responsive.css")
 		link(rel="stylesheet",href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css")
 		link(rel="stylesheet",href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css")
 		script(src="/static/bootstrap/js/bootstrap.js")
 		script(src="/static/jquery.knob.js")
-		script(src="/static/css_browser_selector.js")		
+		script(src="/static/css_browser_selector.js")
 		link(href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic",rel="stylesheet",type="text/css")
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
 		link(rel="stylesheet" href="/static/responsive.css")
+		script(src="/static/edit.js")
 	body
-		div.navbar.navbar-fixed-top
-			div.navbar-inner
-				a.brand(href="/") HMS Math Team
+		nav.navbar.navbar-default.navbar-fixed-top(role="navigation")
+			div.navbar-header
+				a.navbar-brand(href="/")
+					|HMS Math Team
 				
-		div.container.login
-			div.row
-				div.center.span6.well
-					legend Sign In
-					div.alert.alert-danger#alertpass
-						strong Error! 
-						div#alertText
-							|Incorrect password
-					div.alert.alert-warning#alertchoice
-						strong Warning!
-						div#alertText
-							|Select Edit or Present
-					label Password:
-					input.span4(type="password",name="password")#password
-					p
-					div.btn-group(data-toggle="buttons")
-						label.btn
-							input(type="radio" name="options",style="display:none")#present
-							|Present
-						label.btn
-							input(type="radio" name="options", style="display:none")#edit
-							|Edit
-					div.btn-group#dropdown
-						button.btn.btn-default.custom.dropdown-toggle(type="button", data-toggle="dropdown",data-title="")#dropTitle Select set
-							span.caret
-						ul.dropdown-menu
-							each category in categories
-								li
-									a(href="#") #{category}
-							li.divider
-							li
-								a(href="#")
-									|New...
-					button.btn.btn-default.pull-right(type="button",onclick="auth()") Login
+		div.container
+			div.span10
+				div.row-fluid
+					div.list-group.span4#listgroup
+						each datum in data
+							- type = datum.type
+							- content = datum.data
+							- answer = datum.answer
+							- timelimit = datum.time
+							- id = datum._id
+							a.list-group-item(href="#",id="#{id}" onclick="show('#{id}')",data-type="#{type}",data-content="#{content}",data-answer="#{answer}",data-timelimit="#{timelimit}" )
+								h4.list-group-item-heading
+									|Type: #{type}
+								p.list-group-item-text
+									|Content: #{content}
+									br
+									|Answer: #{answer}
+									br
+									|Time limit: #{timelimit}
+					div.span6
+						div.alert.alert-warning#alertchoice
+							strong Select a problem
+						div
+							div.row-fluid
+								div.span6
+									input(type="radio" name="options",value="Mathjax")#mathjaxInput
+									|Mathjax
+									br
+									input(type="radio" name="options",value="Image")#imageInput
+									|Image
 
 
-
+							hr
+							div.input-group
+								input.form-control(type="text" placeholder="LaTeX or image URL")#contentinput
+								input.form-control(type="text" placeholder="Answer")#answerinput
+								input.form-control(type="text" placeholder="Time limit in seconds")#timelimitinput
+								input.form-control.disabled(type="text" placeholder="ID" disabled="disabled")#idinput
+								hr
+							button.btn.btn-danger.span3(type="button",onclick="del()") Delete
+							button.btn.btn-info.span3.offset1(type="button",onclick="add()") Save
+							button.btn.btn-success.span3.offset1(type="button",onclick="add()") New
