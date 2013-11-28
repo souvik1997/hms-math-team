@@ -25,22 +25,26 @@ html(lang=en)
 		div.container
 			div.span10
 				div.row-fluid
-					div.list-group.span4#listgroup
+					div.list-group.span4.bs-docs-sidenav#listgroup
 						each datum in data
 							- type = datum.type
-							- content = datum.data
+							- content = datum.content
 							- answer = datum.answer
 							- timelimit = datum.time
 							- id = datum._id
 							a.list-group-item(href="#",id="#{id}" onclick="show('#{id}')",data-type="#{type}",data-content="#{content}",data-answer="#{answer}",data-timelimit="#{timelimit}" )
 								h4.list-group-item-heading
-									|Type: #{type}
+									|Type: 
+									normal(id="typetext-#{id}") #{type}
 								p.list-group-item-text
-									|Content: #{content}
+									|Content: 
+									normal(id="contenttext-#{id}") #{content}
 									br
-									|Answer: #{answer}
+									|Answer: 
+									normal(id="answertext-#{id}") #{answer}
 									br
-									|Time limit: #{timelimit}
+									|Time limit: 
+									normal(id="timelimittext-#{id}") #{timelimit}
 					div.span6
 						div.alert.alert-warning#alertchoice
 							strong Select a problem
@@ -62,5 +66,5 @@ html(lang=en)
 								input.form-control.disabled(type="text" placeholder="ID" disabled="disabled")#idinput
 								hr
 							button.btn.btn-danger.span3(type="button",onclick="del()") Delete
-							button.btn.btn-info.span3.offset1(type="button",onclick="add()") Save
+							button.btn.btn-info.span3.offset1(type="button",onclick="save()") Save
 							button.btn.btn-success.span3.offset1(type="button",onclick="add()") New

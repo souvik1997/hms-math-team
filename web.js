@@ -35,7 +35,7 @@ app.get("/*",function(request,response) //Fallback if the database is down or if
 {
 	response.send("Cannot connect to database. Try again later.");
 });
-MongoClient.connect('mongodb://user123:secret@widmore.mongohq.com:10000/problems', 
+MongoClient.connect('mongodb://'+process.env.MONGOHQUSERNAME+':'+process.env.MONGOHQPASSWORD+'@'+process.env.MONGOHQURL, 
 	function(err, db) {
 		if(err) throw err;
 

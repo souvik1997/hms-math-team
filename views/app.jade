@@ -27,15 +27,15 @@ mixin generateProblems(problems)
 			|Start!
 	each val in problems
 		- type=val.type
-		- data=val.data
+		- content=val.content
 		- time = val.time
 		+slide("",time)
 			p.lead
 				if type=="mathjax"
 					h1
-						|#{data}
+						|#{content}
 				else
-					img(src=data)
+					img(src=content)
 
 mixin generateAnswers(problems)
 	p
