@@ -87,6 +87,18 @@ html(lang=en)
 
 					div.modal-footer
 						button.btn.btn-default(type="button",data-dismiss="modal") Close
+		div.modal.fade#new
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
+						h4(class="modal-title") New
+					div.modal-body.container						
+						div.input-group
+							input.span3(type="text" placeholder="Name")#name
+							button.btn.btn-info.offset1(type="button",onclick="document.location='/edit/'+$('#name').val()") Submit
+					div.modal-footer
+						button.btn.btn-default(type="button",data-dismiss="modal") Close
 		div.navbar.navbar-fixed-top
 			div.navbar-inner
 				a.brand(href="#") HMS Math Team
@@ -126,7 +138,7 @@ html(lang=en)
 									a(href="#") #{category}
 							li.divider
 							li
-								a(href="#")
+								a(href="#",onclick="$('#new').modal()")
 									|New...
 					button.btn.btn-default.pull-right(type="button",onclick="auth()") Login
 

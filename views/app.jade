@@ -27,14 +27,14 @@ mixin generateProblems(problems)
 			|Start!
 	each val in problems
 		- type=val.type
-		- content=val.content
-		- time = val.time
+		- content=val.content.replace("\\plus","+")
+		- time = val.timelimit
 		+slide("",time)
 			p.lead
-				if type=="mathjax"
+				if type=="mathjax" || type=="plaintext"
 					h1
 						|#{content}
-				else
+				else if type=="image"
 					img(src=content)
 
 mixin generateAnswers(problems)

@@ -17,6 +17,22 @@ html(lang=en)
 		link(rel="stylesheet" href="/static/responsive.css")
 		script(src="/static/edit.js")
 	body
+		div.modal.fade#myModal
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
+						h4(class="modal-title") Copy and paste an image
+					div.modal-body
+						h4 Created by Souvik Banerjee
+						|This website is powered by node.js, expressjs, Twitter Bootstrap, jQuery, and MongoDB
+						h4 License
+						|All code is available under the BSD 3-clause 
+						a(href="http://opensource.org/licenses/BSD-3-Clause")
+							|license
+
+					div.modal-footer
+						button.btn.btn-default(type="button",data-dismiss="modal") Close
 		nav.navbar.navbar-default.navbar-fixed-top(role="navigation")
 			div.navbar-header
 				a.navbar-brand(href="/")
@@ -25,12 +41,12 @@ html(lang=en)
 		div.container
 			div.span10
 				div.row-fluid
-					div.list-group.span4.bs-docs-sidenav#listgroup
+					div.list-group.span4.pre-scrollable(data-category="#{category}")#listgroup
 						each datum in data
 							- type = datum.type
-							- content = datum.content
+							- content = datum.content.replace("\\plus","+")
 							- answer = datum.answer
-							- timelimit = datum.time
+							- timelimit = datum.timelimit
 							- id = datum._id
 							a.list-group-item(href="#",id="#{id}" onclick="show('#{id}')",data-type="#{type}",data-content="#{content}",data-answer="#{answer}",data-timelimit="#{timelimit}" )
 								h4.list-group-item-heading
@@ -56,15 +72,23 @@ html(lang=en)
 									br
 									input(type="radio" name="options",value="Image")#imageInput
 									|Image
+									br
+									input(type="radio" name="options",value="Image")#plaintextInput
+									|Plaintext
 
 
 							hr
-							div.input-group
-								input.form-control(type="text" placeholder="LaTeX or image URL")#contentinput
+							div
+								div.input-group
+									span.btn.input-group-addon(onclick="toggleModal()" disabled="disabled")#uploadbtn Upload
+									input.form-control(type="text" placeholder="LaTeX or image URL")#contentinput
 								input.form-control(type="text" placeholder="Answer")#answerinput
 								input.form-control(type="text" placeholder="Time limit in seconds")#timelimitinput
 								input.form-control.disabled(type="text" placeholder="ID" disabled="disabled")#idinput
 								hr
-							button.btn.btn-danger.span3(type="button",onclick="del()") Delete
-							button.btn.btn-info.span3.offset1(type="button",onclick="save()") Save
-							button.btn.btn-success.span3.offset1(type="button",onclick="add()") New
+							div.container
+								div.span6
+									button.btn.btn-danger.span2(type="button",onclick="del()") Delete
+									button.btn.btn-info.span2.offset1(type="button",onclick="save()") Save
+									button.btn.btn-success.span2.offset1(type="button",onclick="add()") New
+									button.btn.btn-warning.span3.offset1(type="button",data-loading-text="Sending...", onclick="submit()")#submit-btn Save+Submit

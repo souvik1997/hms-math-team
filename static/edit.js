@@ -1,13 +1,30 @@
 var instructions = [];
 $(function(){
 	instructions =instructions.concat("BEGIN");
+	setDimensions();
+	$('#submit-btn')
+      .click(function () {
+        var btn = $(this)
+        btn.button('loading')
+        setTimeout(function () {
+          btn.button('reset')
+        }, 3000)
+      })
 });
+function setDimensions(){
+   var windowsHeight = $('window').height()-200; //Good margin
+   $('#listgroup').css('max-height', windowsHeight + 'px');
+}
+function toggleModal()
+{
+	$('#myModal').modal();
+}
 function del()
 {
 	var id = $("#idinput").val();
 	$("#"+id).remove();
 	if ($(".list-group-item"))
-		show($(".list-group-item").attr("id"));
+		show($(".list-group-item").prop("id"));
 }
 function save()
 {
@@ -22,14 +39,15 @@ function save()
 		}
 		else
 		{
-			$("#"+id).attr("data-type",$("#mathjaxInput").prop("checked") ? "mathjax" : "image");
+			$("#"+id).attr("data-type",$("#mathjaxInput").prop("checked") ? "mathjax" : ($("#imageInput").prop("checked")? "image" : "plaintext"));
 		}		
 	}
 	reload(id);
+	show(id);
 }
 function add()
 {
-	var id = makeid(32);
+	var id = makeid(25); //default length for mongodb
 	var parent = $('<a/>',{
 			class:'list-group-item',
 			href:'#',
@@ -51,6 +69,31 @@ function add()
 	$("#listgroup").append(parent.append(header).append(body));
 
 }
+function submit()
+{
+	save();
+	var str = "data="+JSON.stringify(mkJSON());
+	str = str.replace(/\+/g,"\\\\plus");
+	$.post("/admin/update/"+$("#listgroup").attr("data-category"),str);
+}
+function mkJSON()
+{
+	var arr = $("#listgroup").children();
+	var obj = {data:[]}; //Wrapper for extensibility
+
+	category = $("#listgroup").attr("data-category");
+	for(var i = 0; i < arr.length; i++)
+	{ 
+		arr[i] = $(arr[i]).attr("id");
+	}
+	for(var i = 0; i < arr.length; i++)
+	{ 
+		var data = extract(arr[i]);
+		data.category = category;
+		obj.data.push(data);
+	}
+	return obj;
+}
 function makeid(length)
 {
     var text = "";
@@ -71,25 +114,48 @@ function reload(id)
 		$("#"+field+"text-"+id).text($("#"+id).attr("data-"+field));
 	}
 }
-function show(id)
+function extract(id,e)
 {
-	var type = $("#"+id).attr("data-type");
-	var content = $("#"+id).attr("data-content");
-	var answer = $("#"+id).attr("data-answer");
-	var timelimit = $("#"+id).attr("data-timelimit");
-	$("#contentinput").val(content);
-	$("#answerinput").val(answer);
-	$("#timelimitinput").val(timelimit);
-	$("#idinput").val(id);
-	if (type === "mathjax")
+	if (!e)
 	{
-		$("#mathjaxInput").prop("checked",true);
-		$("#imageInput").prop("checked",false);
+		var type = $("#"+id).attr("data-type");
+		var content = $("#"+id).attr("data-content");
+		var answer = $("#"+id).attr("data-answer");
+		var timelimit = $("#"+id).attr("data-timelimit");
+		return {type:type, content:content,answer:answer,timelimit:timelimit};
 	}
 	else
 	{
-		$("#mathjaxInput").prop("checked",false);
-		$("#imageInput").prop("checked",true);
+		var type = escape($("#"+id).attr("data-type"));
+		var content = escape($("#"+id).attr("data-content"));
+		var answer = escape($("#"+id).attr("data-answer"));
+		var timelimit = escape($("#"+id).attr("data-timelimit"));
+		return {type:type, content:content,answer:answer,timelimit:timelimit};
+	}
+}
+function show(id)
+{
+	var obj = extract(id);
+	$("#contentinput").val(obj.content);
+	$("#answerinput").val(obj.answer);
+	$("#timelimitinput").val(obj.timelimit);
+	$("#idinput").val(id);
+	if (obj.type === "mathjax")
+	{
+		$("#mathjaxInput").prop("checked",true);
+		$("#uploadbtn").attr("disabled",true);
+		//$("#imageInput").prop("checked",false);
+	}
+	else if (obj.type === "image")
+	{
+		//$("#mathjaxInput").prop("checked","false");
+		$("#imageInput").prop("checked","true");
+		$("#uploadbtn").attr("disabled",false);
+	}
+	else
+	{
+		$("#plaintextInput").prop("checked",true);
+		$("#uploadbtn").attr("disabled",true);
 	}
 
 }

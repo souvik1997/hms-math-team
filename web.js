@@ -67,6 +67,20 @@ MongoClient.connect('mongodb://'+process.env.MONGOHQUSERNAME+':'+process.env.MON
 				});
 			});
 		});
+		app.post("/admin/update/:category",function(request,response){
+			var str = request.body.data;//.replace("\\plus","+");
+			console.log(str);
+			var data = JSON.parse(str).data; //No plus sign in POST data aka Little Bobby Tables
+			db.collection('math',function(err,collection){
+				collection.remove({category:request.params.category},function(err,reply){ //A terrible idea
+					collection.insert(data,function(err,reply){
+						response.send("done");
+						console.log("Updated database");
+					});
+					
+				});
+			});
+		});
 		app.get("/",function(request,response) {
 			db.collection('math',function(err,collection){
 				collection.distinct("category",
