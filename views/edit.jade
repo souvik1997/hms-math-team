@@ -16,20 +16,20 @@ html(lang=en)
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700,800", rel="stylesheet",type="text/css")
 		link(rel="stylesheet" href="/static/responsive.css")
 		script(src="/static/edit.js")
-	body
+		style.
+			img
+			{
+				max-width:100%; max-height:100%;
+			}
+	body#body
 		div.modal.fade#myModal
 			div.modal-dialog
 				div.modal-content
 					div.modal-header
 						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
-						h4(class="modal-title") Copy and paste an image
+						button.btn.btn-info(type="button",onclick="finalize()",data-loading-text="Uploading...")#upload-btn Upload
 					div.modal-body
-						h4 Created by Souvik Banerjee
-						|This website is powered by node.js, expressjs, Twitter Bootstrap, jQuery, and MongoDB
-						h4 License
-						|All code is available under the BSD 3-clause 
-						a(href="http://opensource.org/licenses/BSD-3-Clause")
-							|license
+						div#pasteCatcher
 
 					div.modal-footer
 						button.btn.btn-default(type="button",data-dismiss="modal") Close
@@ -41,7 +41,7 @@ html(lang=en)
 		div.container
 			div.span10
 				div.row-fluid
-					div.list-group.span4.pre-scrollable(data-category="#{category}")#listgroup
+					div.list-group.span5.pre-scrollable(data-category="#{category}")#listgroup
 						each datum in data
 							- type = datum.type
 							- content = datum.content.replace("\\plus","+")
@@ -70,7 +70,7 @@ html(lang=en)
 									input(type="radio" name="options",value="Mathjax")#mathjaxInput
 									|Mathjax
 									br
-									input(type="radio" name="options",value="Image")#imageInput
+									input(type="radio" name="options",value="Image",onclick='$("#uploadbtn").attr("disabled",false);')#imageInput
 									|Image
 									br
 									input(type="radio" name="options",value="Image")#plaintextInput

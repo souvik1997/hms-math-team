@@ -3,13 +3,13 @@ $(function(){
 	instructions =instructions.concat("BEGIN");
 	setDimensions();
 	$('#submit-btn')
-      .click(function () {
-        var btn = $(this)
-        btn.button('loading')
-        setTimeout(function () {
-          btn.button('reset')
-        }, 3000)
-      })
+	.click(function () {
+		var btn = $(this)
+		btn.button('loading')
+		setTimeout(function () {
+			btn.button('reset')
+		}, 3000)
+	});
 });
 function setDimensions(){
    var windowsHeight = $('window').height()-200; //Good margin
@@ -18,6 +18,10 @@ function setDimensions(){
 function toggleModal()
 {
 	$('#myModal').modal();
+	var children = $('#pasteCatcher').children();
+	for (var i = 0; i < children.length; i++)
+		$(children[i]).remove();
+	setUpClipboard();
 }
 function del()
 {
@@ -67,7 +71,7 @@ function add()
 	.append("Answer: ").append($('<normal/>',{id:'answertext-'+id}).append("")).append($('<br>'))
 	.append("Time limit: ").append($('<normal/>',{id:'timelimittext-'+id}).append(""));
 	$("#listgroup").append(parent.append(header).append(body));
-
+	show(id);
 }
 function submit()
 {
@@ -83,11 +87,11 @@ function mkJSON()
 
 	category = $("#listgroup").attr("data-category");
 	for(var i = 0; i < arr.length; i++)
-	{ 
+	{
 		arr[i] = $(arr[i]).attr("id");
 	}
 	for(var i = 0; i < arr.length; i++)
-	{ 
+	{
 		var data = extract(arr[i]);
 		data.category = category;
 		obj.data.push(data);
@@ -96,13 +100,13 @@ function mkJSON()
 }
 function makeid(length)
 {
-    var text = "";
-    var possible = "abcdef0123456789";
+	var text = "";
+	var possible = "abcdef0123456789";
 
-    for( var i=0; i < length; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	for( var i=0; i < length; i++ )
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    return text;
+	return text;
 }
 function reload(id)
 {
@@ -158,4 +162,115 @@ function show(id)
 		$("#uploadbtn").attr("disabled",true);
 	}
 
+}
+
+/* http://29a.ch/2011/9/11/uploading-from-html5-canvas-to-imgur-data-uri */
+function uploadimgur(canvas,btn){
+	try {
+		var img = canvas.toDataURL('image/jpeg', 0.9).split(',')[1];
+	} catch(e) {
+		var img = canvas.toDataURL().split(',')[1];
+	}
+	$.ajax({
+		url: 'https://api.imgur.com/3/image',
+		type: 'post',
+		headers: {
+		Authorization: 'Client-ID a1ecca95edc4ebb'
+		},
+		data: {
+		image: img
+		},
+		dataType: 'json',
+		success: function(response) {
+			if(response.success) {
+				$("#myModal").modal('hide');
+				$("#contentinput").val(response.data.link);
+			}
+		}
+
+	});
+}
+function finalize()
+{
+	$("#pasteCatcher").prop("contenteditable", false);
+	if ($("#pasteCatcher").children()[0])
+	{
+		var image = undefined;
+		image = $("#pasteCatcher").children()[0];
+		var dim = dimensions(image);
+		canvas = document.createElement('canvas');
+		canvas.width = dim.width;
+		canvas.height = dim.height;
+		ctx = canvas.getContext("2d");
+		ctx.drawImage(image, 0, 0);
+		//var data = canvas.toDataURL();
+		uploadimgur(canvas);
+	}
+
+}
+function dimensions(img_element) {
+	var t = new Image();
+	t.src = (img_element.getAttribute ? img_element.getAttribute("src") : false) || img_element.src;
+	return {width:t.width,height:t.height};
+}
+/* http://joelb.me/blog/2011/code-snippet-accessing-clipboard-images-with-javascript/ */
+// We start by checking if the browser supports the 
+// Clipboard object. If not, we need to create a 
+// contenteditable element that catches all pasted data 
+function setUpClipboard()
+{
+	if (!window.Clipboard) {
+		$("#pasteCatcher").attr("contenteditable", "");
+		$("#pasteCatcher").focus();
+		$(document).on("click", function() { $("#pasteCatcher").focus(); });
+		$("#pasteCatcher").on("onchanged input",function() { $("#pasteCatcher").prop("contenteditable", false);})
+	}
+	//$(window).on("paste", pasteHandler);
+	window.addEventListener("paste", pasteHandler);
+	function pasteHandler(e) {
+		if (e.clipboardData) {
+			var items = e.clipboardData.items;
+			if (items) {
+				for (var i = 0; i < items.length; i++) {
+					if (items[i].type.indexOf("image") !== -1) {
+						var blob = items[i].getAsFile();
+						var URLObj = window.URL || window.webkitURL;
+						var source = URLObj.createObjectURL(blob);
+						createImage(source);
+						break;
+					}
+				}
+			}
+			} else {
+			// This is a cheap trick to make sure we read the data
+			// AFTER it has been inserted.
+			setTimeout(checkInput, 1);
+		}
+	}
+	/* Parse the input in the paste catcher element */
+	function checkInput() {
+		// Store the pasted content in a variable
+		var child = $("#pasteCatcher").children[0];
+
+		// Clear the inner html to make sure we're always
+		// getting the latest inserted content
+		$("#pasteCatcher").text = "";
+
+		if (child) {
+			// If the user pastes an image, the src attribute
+			// will represent the image as a base64 encoded string.
+			if (child.tagName === "IMG") {
+				createImage(child.src);
+			}
+		}
+	}
+	/* Creates a new image from a given source */
+	function createImage(source) {
+		var pastedImage = new Image();
+		pastedImage.onload = function() {
+			if ($("#pasteCatcher").children().length === 0)
+				$("#pasteCatcher").append(pastedImage);
+		}
+		pastedImage.src = source;
+	}
 }
