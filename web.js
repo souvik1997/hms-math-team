@@ -7,7 +7,7 @@ app.set('view engine', 'jade')
 var port = process.env.PORT || 8080;
 app.use(express.bodyParser());
 var MongoClient = require('mongodb').MongoClient;
-
+app.locals.pretty = true;
 
 app.use("/static",express.static(__dirname+"/static"));
 

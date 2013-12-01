@@ -27,13 +27,13 @@ mixin generateProblems(problems)
 			|Start!
 	each val in problems
 		- type=val.type
-		- content=val.content.replace("\\plus","+")
+		- content=val.content.replace(/\\plus/g,"+")
 		- time = val.timelimit
 		+slide("",time)
 			p.lead
 				if type=="mathjax" || type=="plaintext"
 					h1
-						|#{content}
+						|!{content.replace(/\\newline/g, '<br/>')}
 				else if type=="image"
 					img.problem(src=content)
 
