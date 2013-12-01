@@ -67,6 +67,7 @@ html(lang=en)
 			var elapsedTime = 0;
 			var interval = 100;
 			var timerHandle = NaN;
+			var hasPlayed = false;
 			function nextSlide()
 			{
 				if (curSlide < numSlides)
@@ -126,6 +127,7 @@ html(lang=en)
 					clearInterval(timerHandle);
 				$("#countdown").text(toFixed(0,3-Math.round(Math.log(interval)/Math.log(10))));
 				timerHandle = NaN;
+				hasPlayed = false;
 			}
 			function timerClear()
 			{
@@ -153,6 +155,11 @@ html(lang=en)
 					$(".dial").trigger('configure',{
 						fgColor: "#FF9B94"
 					});
+					if (!hasPlayed)
+					{
+						$("#redwarning")[0].play()
+						hasPlayed = true;
+					}
 				}
 				if (elapsedTime > totalTime)
 					timerEnd();
@@ -195,6 +202,7 @@ html(lang=en)
 			}
 		script(src="/static/css_browser_selector.js")
 	body
+		audio(src="/static/alarm.wav",preload="audio")#redwarning
 		div.modal.fade#myModal
 			div.modal-dialog
 				div.modal-content
