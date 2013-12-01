@@ -23,7 +23,7 @@ mixin generateProblems(problems)
 				li No maiming
 				li No medieval torture devices allowed
 				li Have fun
-		a.btn.btn-large.btn-primary(onclick="nextSlide()")
+		a.btn.btn-large.btn-primary(onclick="startPresentation()")
 			|Start!
 	each val in problems
 		- type=val.type
@@ -104,6 +104,14 @@ html(lang=en)
 					timerStop();
 					timerClear();
 				}
+			}
+			function startPresentation()
+			{
+				if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i))) {
+					$("#redwarning")[0].play();
+					$("#redwarning")[0].pause();
+				}
+				nextSlide();
 			}
 			function timerStart(time)
 			{
