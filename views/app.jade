@@ -25,6 +25,8 @@ mixin generateProblems(problems)
 				li Have fun
 		a.btn.btn-large.btn-primary(onclick="startPresentation()")
 			|Start!
+		a.btn.btn-large.btn-danger.offset1(onclick="$('#myModal').modal()")
+			|Answers
 	each val in problems
 		- type=val.type
 		- content=val.content.replace(/\\plus/g,"+")
@@ -79,7 +81,6 @@ html(lang=en)
 				}
 				else
 				{
-					onEnd();
 					timerStop();
 					timerClear();
 				}
@@ -179,10 +180,6 @@ html(lang=en)
 				timerClear();
 				nextSlide();
 			}
-			function onEnd()
-			{
-				$('#myModal').modal();
-			}
 			function updateProgressbar()
 			{
 				var ratio = Math.round((curSlide)/(numSlides) * 100);
@@ -216,9 +213,8 @@ html(lang=en)
 				div.modal-content
 					div.modal-header
 						button.close(type="button",data-dismiss="modal" aria-hidden="true") &times;
-						h4(class="modal-title") Done!
+						h4(class="modal-title") Answers
 					div.modal-body
-						h4 Answers
 						+generateAnswers(indata)
 					div.modal-footer
 						button.btn.btn-default(type="button",data-dismiss="modal") Close
