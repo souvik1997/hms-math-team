@@ -1,32 +1,32 @@
 mixin slide(type,time)
 	div.item(class=type,data-limit=time)
 		div.container
-			div.carousel-caption
-				if block
-					block
-				else
-					p No content provided
+			if block
+				block
+			else
+				p No content provided
 
 mixin generateProblems(problems)
 	+slide("active","0")
-		p.rules
-			strong General guidelines
-			ul.rules
-				li 15 seconds per number sense question
-				li 45 seconds per general math question
-				li 1 pt per number sense question
-				li 2 pts per general math question
-				br
-				li Top 10 get candy
-				li In addition, we will draw a random name from the top 50% of scores to get a king sized candy bar
-				li Don’t cheat
-				li No maiming
-				li No medieval torture devices allowed
-				li Have fun
-		a.btn.btn-large.btn-primary(onclick="startPresentation()")
-			|Start!
-		a.btn.btn-large.btn-danger.offset1(onclick="$('#myModal').modal()")
-			|Answers
+		div.carousel-caption
+			p.rules
+				strong General guidelines
+				ul.rules
+					li 15 seconds per number sense question
+					li 45 seconds per general math question
+					li 1 pt per number sense question
+					li 2 pts per general math question
+					br
+					li Top 10 get candy
+					li In addition, we will draw a random name from the top 50% of scores to get a king sized candy bar
+					li Don’t cheat
+					li No maiming
+					li No medieval torture devices allowed
+					li Have fun
+			a.btn.btn-large.btn-primary(onclick="startPresentation()")
+				|Start!
+			a.btn.btn-large.btn-danger.offset1(onclick="$('#myModal').modal()")
+				|Answers
 	each val in problems
 		- type=val.type
 		- content=val.content.replace(/\\plus/g,"+")
@@ -34,8 +34,9 @@ mixin generateProblems(problems)
 		+slide("",time)
 			p.lead
 				if type=="mathjax" || type=="plaintext"
-					h1
-						|!{content.replace(/\\newline/g, '<br/>')}
+					div.carousel-caption
+						h1
+							|!{content.replace(/\\newline/g, '<br/>')}
 				else if type=="image"
 					img.problem(src=content)
 
@@ -76,6 +77,7 @@ html(lang=en)
 				{	
 					$(".carousel").carousel("next");
 					curSlide++;	
+					$("#questionnum").text(curSlide);
 					updateProgressbar();
 					timerStartHelper();
 				}
@@ -92,6 +94,7 @@ html(lang=en)
 					$(".carousel").carousel("prev");
 					curSlide--;	
 				}
+				$("#questionnum").text(curSlide);
 				updateProgressbar();
 				timerStartHelper();
 			}
@@ -199,11 +202,17 @@ html(lang=en)
 		style.
 			img.problem
 			{
-				width: 850px;
+				width: 1150px;
+				margin-top:30px;
 			}
 			.ipad img.problem
 			{
-				width: 750px;
+				width: 850px;
+				margin-left:50px;
+				margin-top:50px;
+			}
+			.carousel-caption {
+				margin-bottom: 50px;
 			}
 		script(src="/static/css_browser_selector.js")
 	body
@@ -222,7 +231,6 @@ html(lang=en)
 			- num = indata.length;
 			div.progress
 				div.bar(role="progressbar",aria-valuenow="0", aria-valuemin="0", aria-valuemax=num style="width: 0%")
-					span.sr-only			
 			div.carousel.slide#carousel-1(data-interval="false",data-wrap="false",style="background-color:#585858")
 				div.carousel-inner
 					+generateProblems(indata)
@@ -230,7 +238,8 @@ html(lang=en)
 						input(type="text",class="dial",data-displayInput="false",data-width="150",data-thickness=".16", data-fgColor="#35FF59")
 					div.right-hack-text
 						h2#countdown
-
+					div.left-hack-text
+						h1(style="font-size:52px")#questionnum
 			a(class="left carousel-control",onclick="prevSlide()")
 				|&lsaquo;
 			a(class="right carousel-control",onclick="nextSlide()")

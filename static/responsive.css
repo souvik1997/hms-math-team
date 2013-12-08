@@ -239,19 +239,24 @@ div.addthis_toolbox {
 {
 	left:86.5%;
 }
-.left-hack{
+.left-hack-text{
 	position:absolute;
-	top:80%;
-	left:10%;
+	top:4%;
+	left:2.5%;
 	width:auto;
 	height:auto;
 	margin-top:-20px;
 	font-weight:100;
 	line-height:30px;
-	color:#4CE571;
+	color:#ffffff;
 	background:#222222;
 	opacity:1.0;
+	z-index: 1;
 	background: rgba(0, 0, 0, 0.0);
+}
+.ipad .left-hack-text
+{
+	left:1.5%;
 }
 p.rules
 {
