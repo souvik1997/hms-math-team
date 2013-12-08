@@ -37,10 +37,18 @@ html(lang=en)
 				}
 				return hash;
 			}
+			function setCookie(c_name,value,exdays)
+			{
+				var exdate=new Date();
+				exdate.setDate(exdate.getDate() + exdays);
+				var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+				document.cookie=c_name + "=" + c_value;
+			}
 			function auth()
 			{
 				if ($("#password").val().hashCode() === 753544051)
 				{
+					setCookie("authkey",($("#password").val()+"!SALT34~AB~CF1~2EF~011~2~SALT!").hashCode(),1);
 					var choice = $(".btn.active").children().attr("id");
 					if (choice == undefined)
 					{
